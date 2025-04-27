@@ -21,6 +21,9 @@ namespace CTTileToChallenge
         // Corrected the method name case to "OnNewGameModel"
         public override void OnUpdate()
         {
+
+            GetApiData apiData = new GetApiData();
+            int data = apiData.fetchData(5, 6);
  
             string[] allowedTowers = { "BoomerangMonkey", "Psi", "WizardMonkey", "NinjaMonkey", "Mermonkey", "BeastHandler" };
 
