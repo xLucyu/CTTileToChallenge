@@ -10,7 +10,7 @@ namespace CTTileToChallenge.api
     {
         private static readonly HttpClient client = new HttpClient();
 
-        public static async Task<JsonElement?> FetchData(string tileCode, int eventNumber)
+        public static async Task<TileData?> fetchApiData(string tileCode, int eventNumber)
         {
             string url = $"https://storage.googleapis.com/btd6-ct-map/events/{eventNumber}/tiles.json";
 
@@ -20,21 +20,17 @@ namespace CTTileToChallenge.api
                 response.EnsureSuccessStatusCode();
 
                 string apiData = await response.Content.ReadAsStringAsync();
-                var apiObject = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(apiData);
+                var apiObject = JsonSerializer.Deserialize<Dictionary<string, TileData>>(apiData);
 
-                if (apiObject != null && apiObject.TryGetValue(tileCode.ToUpper(), out JsonElement tileData))
+                if (apiObject != null && apiObject.TryGetValue(tileCode.ToUpper(), out TileData? tileData))
                 {
                     return tileData;
                 }
-                else
-                {
-                    return null;
-                }
             }
-            catch (HttpRequestException e)
-            {
-                return null;
-            }
+            catch (HttpRequestException) { }
+
+            return null;
         }
+
     }
 }
