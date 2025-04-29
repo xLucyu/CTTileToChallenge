@@ -1,48 +1,54 @@
 using MelonLoader;
 using BTD_Mod_Helper;
 using CTTileToChallenge;
+using BTD_Mod_Helper.Api.ModOptions;
 using Il2CppAssets.Scripts.Unity;
-using UnityEngine;
-using System.Linq;
 using CTTileToChallenge.api;
+using System.Threading.Tasks;
+using UnityEngine;
+using System.Collections.Generic;
 
-[assembly: MelonInfo(typeof(CTTileToChallenge.CTTileToChallenge), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
+
+[assembly: MelonInfo(typeof(CTTileToChallenge.Main), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
 namespace CTTileToChallenge
 {
-    public class CTTileToChallenge : BloonsTD6Mod
+    public class Main : BloonsTD6Mod
     {
+
+        public static readonly ModSettingString Tile = new ModSettingString("MRX")
+        {
+            displayName = "Tile Code"
+        };
+
+        public static readonly ModSettingInt Event = new ModSettingInt(1)
+        {
+            displayName = "Event Number"
+        };
+
         public override void OnApplicationStart()
         {
-            ModHelper.Msg<CTTileToChallenge>("CTTileToChallenge loaded!");
+            ModHelper.Msg<Main>("CTTileToChallenge loaded!");
         }
 
-        // Corrected the method name case to "OnNewGameModel"
         public override void OnUpdate()
         {
+            string selectedTileCode = Tile;
+            int selectedEventNumber = Event;
 
-            GetApiData apiData = new GetApiData();
-            int data = apiData.fetchData(5, 6);
- 
-            string[] allowedTowers = { "BoomerangMonkey", "Psi", "WizardMonkey", "NinjaMonkey", "Mermonkey", "BeastHandler" };
-
+            GetApiData fulltileInfo = new GetApiData();
             if (Input.GetKeyDown(KeyCode.X))
             {
-                var challengeEditorModel = Game.instance.playerService.Player.Data.challengeEditorModel;
-                
-                foreach (var tower in challengeEditorModel.towers)
+                Task.Run(async () =>
                 {
-                    if (allowedTowers.Contains(tower.tower))
-                    {
-                        tower.max = -1;
-                    }
-                    else
-                    {
-                        tower.max = 0;
-                    }
-                }
+                    var json = await GetApiData.FetchData(Tile, Event);
+                    ModHelper.Msg<Main>(json);
+                });
             }
+
+           // var challengeEditorModel = Game.instance.playerService.Player.Data.challengeEditorModel;
+            
         }
     }
 }
