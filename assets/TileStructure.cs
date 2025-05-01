@@ -5,6 +5,7 @@ public class TileData
     public string? TileType { get; set; }
     public GameData? GameData { get; set; }
 }
+
 public class GameData
 {
     public string? selectedMap { get; set; }
@@ -12,13 +13,12 @@ public class GameData
     public int? subGameType { get; set; }
     public string? SelectedDifficulty { get; set; }
     public DcModel? dcModel { get; set; }
-
 }
 
 public class BossData
 {
-    public int? bossBloon { get; set; }
-    public int? TierCount { get; set; }
+    public int bossBloon { get; set; }
+    public int TierCount { get; set; }
 }
 
 public class DcModel
@@ -31,10 +31,7 @@ public class DcModel
     public bool? disableMK {  get; set; }
     public bool? disableSelling { get; set; }
     public BloonModifiers? bloonModifiers { get; set; }
-
     public Towers? towers { get; set; }
-
-
 }
 
 public class BloonModifiers
@@ -43,7 +40,6 @@ public class BloonModifiers
     public double? speedMultiplier { get; set; }
     public double? moabSpeedMultiplier { get; set; }
     public double? regrowRateMultiplier { get; set; }
-
 }
 
 public class HealthMultipliers

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 
-namespace CTTileToChallenge.api
+namespace CTTileToChallenge.assets
 {
     public class GetApiData
     {
