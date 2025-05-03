@@ -1,4 +1,5 @@
-﻿using BTD_Mod_Helper.Extensions;
+﻿using System;
+using BTD_Mod_Helper.Extensions;
 using HarmonyLib;
 using Il2CppAssets.Scripts.Data.Boss;
 using Il2CppAssets.Scripts.Models.ServerEvents;
@@ -9,11 +10,30 @@ using Il2CppAssets.Scripts.Unity.UI_New.InGame;
 namespace CTTileToChallenge.assets;
 
 [HarmonyPatch(typeof(ChallengeEditorPlay), nameof(ChallengeEditorPlay.StartNewGame))]
+public static class StartNewGame
+{
+    [HarmonyPrefix]
+    private static void Prefix()
+    {
+        LoadBoss.Prefix();
+    }
+}
+
+[HarmonyPatch(typeof(ChallengeEditorPlay), nameof(ChallengeEditorPlay.ContinueClicked))]
+public static class ContinueBtn
+{
+    [HarmonyPrefix]
+    private static void Prefix()
+    {
+        LoadBoss.Prefix();
+    }
+}
+
 public static class LoadBoss 
 {
-   private static BossType ConvertIntToBossType(int bossID)
+   private static BossType ConvertIntToBossType(int bossNumber)
    {
-        switch (bossID)
+        switch (bossNumber)
         {
             case 0: return BossType.Bloonarius;
             case 1: return BossType.Lych;
@@ -26,14 +46,14 @@ public static class LoadBoss
    }
 
     [HarmonyPrefix]
-    private static void Prefix()
+    public static void Prefix()
     {
-        var bossType = Main.selectedTileDataJson?.GameData?.bossData?.bossBloon; // bosses are stored as integers in the api
-        if (bossType == null) return;
+        var bossNumber = Main.selectedTileDataJson?.GameData?.bossData?.bossBloon; // bosses are stored as integers in the api
+        if (bossNumber == null) return;
 
-        BossType bossElement = ConvertIntToBossType(bossType.Value);
+        BossType bossType = ConvertIntToBossType(bossNumber.Value);
         
-        InGameData.Editable.SetupBoss("Bloonarius", bossElement, false, true, BossGameData.DefaultSpawnRounds,
+        InGameData.Editable.SetupBoss("Bloonarius", bossType, false, true, BossGameData.DefaultSpawnRounds,
             new DailyChallengeModel
             {
                 difficulty = InGameData.Editable.selectedDifficulty,
