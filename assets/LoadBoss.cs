@@ -11,7 +11,6 @@ namespace CTTileToChallenge.assets;
 [HarmonyPatch(typeof(ChallengeEditorPlay), nameof(ChallengeEditorPlay.StartNewGame))]
 public static class StartNewGame
 {
-    [HarmonyPrefix]
     private static void Prefix()
     {
         LoadBoss.Prefix();
@@ -21,7 +20,6 @@ public static class StartNewGame
 [HarmonyPatch(typeof(ChallengeEditorPlay), nameof(ChallengeEditorPlay.ContinueClicked))]
 public static class ContinueBtn
 {
-    [HarmonyPrefix]
     private static void Prefix()
     {
         LoadBoss.Prefix();
@@ -44,7 +42,6 @@ public static class LoadBoss
         }
    }
 
-    [HarmonyPrefix]
     public static void Prefix()
     {
         var bossNumber = Main.selectedTileDataJson?.GameData?.bossData?.bossBloon; // bosses are stored as integers in the api

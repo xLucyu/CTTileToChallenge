@@ -129,6 +129,8 @@ namespace CTTileToChallenge
 
         private static void DetermineScoreType(DailyChallengeModel challengeEditorModel, int subGameType)
         {
+            challengeEditorModel.leastCashUsed = -1;
+            challengeEditorModel.leastTiersUsed = -1;
             switch (subGameType)
             {
                 case 8: 
@@ -138,7 +140,6 @@ namespace CTTileToChallenge
                     challengeEditorModel.leastTiersUsed = 99999999;
                     break;
                 default:
-                    challengeEditorModel.ignoreLeastMode = true;
                     break;
             }       
         }
