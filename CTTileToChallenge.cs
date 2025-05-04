@@ -9,9 +9,6 @@ using BTD_Mod_Helper.Api.ModOptions;
 using System.Collections.Generic;
 using System.Linq;
 using Il2CppAssets.Scripts.Models.ServerEvents;
-using System;
-using UnityEngine.Playables;
-using Il2CppAssets.Scripts.Unity.UI_New.ChallengeEditor;
 
 [assembly: MelonInfo(typeof(CTTileToChallenge.Main), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
@@ -47,7 +44,7 @@ namespace CTTileToChallenge
             {
                 Task.Run(async () =>
                 {
-                    var selectedTileDataJson = await GetApiData.fetchApiData(Tile, Event);
+                    selectedTileDataJson = await GetApiData.fetchApiData(Tile, Event);
                     if (selectedTileDataJson == null) return;
 
                     challengeEditorModel.name = Tile;
@@ -58,17 +55,26 @@ namespace CTTileToChallenge
                     SetTowersInChallengeEditor(challengeEditorModel.towers, apiTowers);
                     SetModifiersInChallengeEditor(challengeEditorModel.bloonModifiers, apiModifiers);
 
-                    challengeEditorModel.map = selectedTileDataJson?.GameData?.selectedMap;
-                    challengeEditorModel.mode = selectedTileDataJson?.GameData?.selectedMode;
-                    challengeEditorModel.difficulty = selectedTileDataJson?.GameData?.SelectedDifficulty;
+                    // determine general settings
+                    challengeEditorModel.map = selectedTileDataJson?.GameData?.selectedMap ?? "Tutorial";
+                    challengeEditorModel.mode = selectedTileDataJson?.GameData?.selectedMode ?? "Standard";
+                    challengeEditorModel.difficulty = selectedTileDataJson?.GameData?.selectedDifficulty ?? "Medium";
 
-                    challengeEditorModel.startRules.lives = selectedTileDataJson?.GameData?.dcModel?.startRules?.lives ?? -1;
+                    // determine start rules
+                    challengeEditorModel.startRules.lives = DetermineLifesForChallenge(selectedTileDataJson?.GameData?.selectedDifficulty ?? "Medium");
                     challengeEditorModel.startRules.cash = selectedTileDataJson?.GameData?.dcModel?.startRules?.cash ?? 650;
-                    challengeEditorModel.startRules.round = selectedTileDataJson?.GameData?.dcModel?.startRules?.round ?? 150;
-                    challengeEditorModel.startRules.endRound = selectedTileDataJson?.GameData?.dcModel?.startRules?.endRound ?? -1;
+                    challengeEditorModel.startRules.round = selectedTileDataJson?.GameData?.dcModel?.startRules?.round ?? 1;
+                    challengeEditorModel.startRules.endRound = DetermineEndRound(selectedTileDataJson?.GameData?.dcModel?.startRules?.endRound ?? -1, selectedTileDataJson?.GameData?.bossData?.TierCount ?? 0);
 
-                    challengeEditorModel.disableMK = selectedTileDataJson?.GameData?.dcModel?.disableMK ?? false; // bool MonkeyKnowledge
+                    // generic modifiers
+                    challengeEditorModel.disableMK = selectedTileDataJson?.GameData?.dcModel?.disableMK ?? false;
+                    challengeEditorModel.disableSelling = selectedTileDataJson?.GameData?.dcModel?.disableSelling ?? false;
+                    challengeEditorModel.disableDoubleCash = true;
+                    challengeEditorModel.disableFastTrack = true;
+                    challengeEditorModel.disableInstas = true;
 
+                    // SubGameType f.e. least cash/tiers
+                    DetermineScoreType(challengeEditorModel, selectedTileDataJson?.GameData?.subGameType ?? 0); // 0 = default mode
                 });
             }
         }
@@ -98,8 +104,42 @@ namespace CTTileToChallenge
 
             challengeModifiers.speedMultiplier = (float)(apiModifiers.speedMultiplier ?? 1.0f);
             challengeModifiers.moabSpeedMultiplier = (float)(apiModifiers.moabSpeedMultiplier ?? 1.0f); 
-
         }
 
+        private static int DetermineLifesForChallenge(string difficulty)
+        {
+            switch (difficulty)
+            {
+                case "Easy": return 200;
+                case "Medium": return 150;
+                case "Hard": return 100;
+                default: return -1;
+            }
+        }
+        public static int DetermineEndRound(int endRound, int? bossTiers)
+        {
+            switch (bossTiers)
+            {
+                case 1: return 59;
+                case 2: return 79;
+                default: return endRound;
+            }
+        }
+
+        private static void DetermineScoreType(DailyChallengeModel challengeEditorModel, int subGameType)
+        {
+            switch (subGameType)
+            {
+                case 8: 
+                    challengeEditorModel.leastCashUsed = 99999999;
+                    break;
+                case 9: 
+                    challengeEditorModel.leastTiersUsed = 99999999;
+                    break;
+                default:
+                    challengeEditorModel.ignoreLeastMode = true;
+                    break;
+            }       
+        }
     }
 }

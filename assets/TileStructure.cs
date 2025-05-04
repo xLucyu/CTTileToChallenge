@@ -12,7 +12,7 @@ public class GameData
     public BossData? bossData { get; set; }
     public string? selectedMode { get; set; }
     public int? subGameType { get; set; }
-    public string? SelectedDifficulty { get; set; }
+    public string? selectedDifficulty { get; set; }
     public DcModel? dcModel { get; set; }
 }
 

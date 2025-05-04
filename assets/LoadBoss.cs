@@ -1,5 +1,4 @@
-﻿using System;
-using BTD_Mod_Helper.Extensions;
+﻿using BTD_Mod_Helper.Extensions;
 using HarmonyLib;
 using Il2CppAssets.Scripts.Data.Boss;
 using Il2CppAssets.Scripts.Models.ServerEvents;
@@ -50,10 +49,10 @@ public static class LoadBoss
     {
         var bossNumber = Main.selectedTileDataJson?.GameData?.bossData?.bossBloon; // bosses are stored as integers in the api
         if (bossNumber == null) return;
-
-        BossType bossType = ConvertIntToBossType(bossNumber.Value);
         
-        InGameData.Editable.SetupBoss("Bloonarius", bossType, false, true, BossGameData.DefaultSpawnRounds,
+        BossType bossType = ConvertIntToBossType(bossNumber.Value);
+
+        InGameData.Editable.SetupBoss("Boss", bossType, false, true, BossGameData.DefaultSpawnRounds,
             new DailyChallengeModel
             {
                 difficulty = InGameData.Editable.selectedDifficulty,
