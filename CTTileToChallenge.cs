@@ -9,6 +9,7 @@ using BTD_Mod_Helper.Api.ModOptions;
 using System.Collections.Generic;
 using System.Linq;
 using Il2CppAssets.Scripts.Models.ServerEvents;
+using Il2CppAssets.Scripts.Unity.UI_New.ChallengeEditor;
 
 
 [assembly: MelonInfo(typeof(CTTileToChallenge.Main), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
@@ -73,6 +74,7 @@ namespace CTTileToChallenge
                     challengeEditorModel.disableDoubleCash = true;
                     challengeEditorModel.disableFastTrack = true;
                     challengeEditorModel.disableInstas = true;
+                    challengeEditorModel.maxTowers = selectedTileDataJson?.GameData?.dcModel?.maxTowers ?? -1;
 
                     // SubGameType f.e. least cash/tiers
                     DetermineScoreType(challengeEditorModel, selectedTileDataJson?.GameData?.subGameType ?? 0); // 0 = default mode
