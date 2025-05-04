@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Il2CppAssets.Scripts.Models.ServerEvents;
 
+
 [assembly: MelonInfo(typeof(CTTileToChallenge.Main), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
@@ -40,7 +41,7 @@ namespace CTTileToChallenge
 
             var challengeEditorModel = Game.instance.playerService.Player.Data.challengeEditorModel;
 
-            if (Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.C))
             {
                 Task.Run(async () =>
                 {
